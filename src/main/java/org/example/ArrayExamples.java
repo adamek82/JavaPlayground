@@ -109,9 +109,11 @@ public final class ArrayExamples {
         System.out.println("spheres         = " + Arrays.toString(spheres));
     }
 
+    @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private static void defaultInitialization() {
         subsection("Default initialization");
 
+        // Intentionally reading arrays before any writes to demonstrate default initialization.
         int[] ints = new int[4];
         boolean[] bools = new boolean[4];
         char[] chars = new char[4];
@@ -121,7 +123,8 @@ public final class ArrayExamples {
 
         System.out.println("int[]           = " + Arrays.toString(ints));
         System.out.println("boolean[]       = " + Arrays.toString(bools));
-        System.out.println("char[]          = " + Arrays.toString(chars));
+        System.out.println("char[]          = " + Arrays.toString(chars)
+                + "  // default char is '\\0' (null character, not visually obvious)");
         System.out.println("double[]        = " + Arrays.toString(doubles));
         System.out.println("String[]        = " + Arrays.toString(strings));
         System.out.println("Sphere[]        = " + Arrays.toString(spheres));
@@ -135,6 +138,7 @@ public final class ArrayExamples {
     // 2. Arrays are first-class objects
     // =========================================================================
 
+    @SuppressWarnings({"UnnecessaryLocalVariable", "ConstantValue"})
     private static void arraysAreObjects() {
         subsection("Arrays are objects");
 
@@ -156,11 +160,17 @@ public final class ArrayExamples {
     private static void returningArrays() {
         subsection("Returning arrays from methods");
 
-        int[] returned = createSequence(6);
-        System.out.println("returned        = " + Arrays.toString(returned));
+        int[] returned6 = createSequence(6);
+        int[] returned3 = createSequence(3);
 
-        Sphere[] created = createSphereArray(4);
-        System.out.println("created spheres = " + Arrays.toString(created));
+        System.out.println("createSequence(6) = " + Arrays.toString(returned6));
+        System.out.println("createSequence(3) = " + Arrays.toString(returned3));
+
+        Sphere[] created4 = createSphereArray(4);
+        Sphere[] created2 = createSphereArray(2);
+
+        System.out.println("createSphereArray(4) = " + Arrays.toString(created4));
+        System.out.println("createSphereArray(2) = " + Arrays.toString(created2));
     }
 
     private static int[] createSequence(int size) {
@@ -384,6 +394,7 @@ public final class ArrayExamples {
     // 7. Sorting and searching
     // =========================================================================
 
+    @SuppressWarnings("CommentedOutCode")
     private static void sortingPrimitivesAndObjects() {
         subsection("Sorting primitives");
 
@@ -507,6 +518,7 @@ public final class ArrayExamples {
     // 9. Covariance and runtime checks
     // =========================================================================
 
+    @SuppressWarnings({"UnnecessaryLocalVariable", "DataFlowIssue"})
     private static void covarianceExamples() {
         subsection("Array covariance");
 
@@ -554,6 +566,7 @@ public final class ArrayExamples {
     // 11. Autoboxing limits
     // =========================================================================
 
+    @SuppressWarnings({"WrapperTypeMayBePrimitive", "CommentedOutCode"})
     private static void autoboxingDoesNotWorkForWholeArrays() {
         subsection("Autoboxing does not convert whole arrays");
 
@@ -720,23 +733,10 @@ public final class ArrayExamples {
         }
     }
 
-    private static final class ValueHolder {
-        private final int value;
-
-        private ValueHolder(int value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof ValueHolder other && this.value == other.value;
-        }
-
-        @Override
-        public int hashCode() {
-            return Integer.hashCode(value);
-        }
-
+    private record ValueHolder(int value) {
+        // Intentionally overriding the default record-generated toString() to keep
+        // the output format concise and stable for the array examples.
+        @SuppressWarnings("NullableProblems")
         @Override
         public String toString() {
             return "ValueHolder(" + value + ")";
@@ -756,38 +756,14 @@ public final class ArrayExamples {
         }
     }
 
-    private static final class ComparableSphere implements Comparable<ComparableSphere> {
-        private final int sortKey;
-
-        private ComparableSphere(int sortKey) {
-            this.sortKey = sortKey;
-        }
-
+    private record ComparableSphere(int sortKey) implements Comparable<ComparableSphere> {
         @Override
         public int compareTo(ComparableSphere other) {
             return Integer.compare(this.sortKey, other.sortKey);
         }
-
-        @Override
-        public String toString() {
-            return "ComparableSphere(" + sortKey + ")";
-        }
     }
 
-    private static final class Person {
-        private final String name;
-        private final int age;
-
-        private Person(String name, int age) {
-            this.name = name;
-            this.age = age;
-        }
-
-        @Override
-        public String toString() {
-            return "Person{name='%s', age=%d}".formatted(name, age);
-        }
-    }
+    private record Person(String name, int age) {}
 
     // =========================================================================
     // Tiny generator framework inspired by the book
@@ -892,6 +868,7 @@ public final class ArrayExamples {
     }
 
     private static final class CountingCharGenerator implements Generator<Character> {
+        @SuppressWarnings("SpellCheckingInspection")
         private static final char[] CHARS =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
