@@ -737,7 +737,6 @@ public final class ArrayExamples {
     private record ValueHolder(int value) {
         // Intentionally overriding the default record-generated toString() to keep
         // the output format concise and stable for the array examples.
-        @SuppressWarnings("NullableProblems")
         @Override
         public String toString() {
             return "ValueHolder(" + value + ")";
