@@ -1,5 +1,6 @@
 package org.example;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -778,7 +779,7 @@ public final class ArrayExamples {
 
         static <T> T[] array(Class<T> type, Generator<T> gen, int size) {
             @SuppressWarnings("unchecked")
-            T[] result = (T[]) java.lang.reflect.Array.newInstance(type, size);
+            T[] result = (T[]) Array.newInstance(type, size);
             for (int i = 0; i < size; i++) {
                 result[i] = gen.next();
             }
